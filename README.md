@@ -4,12 +4,12 @@ Sistema para o Projeto Integrador 4 onde será integrado um LLM em um sistema em
 
 **Grupo:**
 
-Estevão Matos de Souza;
-Gabriel Ferreira Paulo;
-João Pereira Paes Henriques;
-Lorena Moreira de Nadai;
-Pedro de Oliveira Guimarães;
-Thaís Peroni Custodio Lino.
+- Estevão Matos de Souza;
+- Gabriel Ferreira Paulo;
+- João Pereira Paes Henriques;
+- Lorena Moreira de Nadai;
+- Pedro de Oliveira Guimarães;
+- Thaís Peroni Custodio Lino.
 
 **Tema:**
 

@@ -1,0 +1,26 @@
+# Variáveis de ambiente
+.env
+
+# Banco de dados local SQLite
+*.db
+*.sqlite
+*.sqlite3
+banco_sinesp_local.db
+
+# Dados brutos extraídos pelo pipeline ETL
+dados_brutos/
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+.env_python/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs e Editores
+.vscode/
+.idea/

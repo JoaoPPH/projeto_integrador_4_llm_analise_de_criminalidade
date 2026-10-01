@@ -15,7 +15,11 @@ def executar_pipeline():
     nome_tabela = "criminalidade_historico"
 
     # 1. Extraction
-    pasta_ficheiros = extrair_dados_sinesp(url_fonte, pasta_dados)
+    if arquivos_ja_baixados(pasta_dados):
+        print("Arquivos já foram baixados anteriormente. Pulando a fase de extração.")
+        pasta_ficheiros = pasta_dados
+    else:
+        pasta_ficheiros = extrair_dados_sinesp(url_fonte, pasta_dados)
     
     if not pasta_ficheiros:
         print("Processo abortado na fase de extração.")
@@ -35,6 +39,13 @@ def executar_pipeline():
             else:
                 print(f"Sem dados válidos para carregar provenientes do ficheiro {nome_ficheiro}.")
 
+
+def arquivos_ja_baixados(pasta):
+    if os.path.exists(pasta):
+        arquivos = [f for f in os.listdir(pasta) if f.endswith('.xlsx')]
+        if len(arquivos) > 0:  # Pode ajustar para == 12 se quiser exigir todos
+            return True
+    return False
 
 if __name__ == "__main__":
     executar_pipeline()

@@ -1,18 +1,14 @@
 # ficheiro: orquestrador_etl.py
 import os
-from extracao_dados import extrair_dados_sinesp
-from transformacao_dados import transformar_dados_sinesp
-from carregamento import carregar_dados_sinesp
-from dotenv import load_dotenv
-
-# Lê o ficheiro .env e carrega as variáveis para a memória
-load_dotenv()
+from .extracao_dados import extrair_dados_sinesp
+from .transformacao_dados import transformar_dados_sinesp
+from .carregamento import carregar_dados_sinesp
+from database.models import OcorrenciaCriminal
 
 def executar_pipeline():
     url_fonte = "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/download/dnsp-base-de-dados/"
     pasta_dados = os.getenv("PASTA_DADOS", "./dados_brutos")
-    string_conexao = os.getenv("STRING_CONEXAO", "sqlite:///banco_sinesp_local.db")
-    nome_tabela = "criminalidade_historico"
+    nome_tabela = OcorrenciaCriminal.__tablename__  # Obtém o nome da tabela a partir do modelo
 
     # 1. Extraction
     if arquivos_ja_baixados(pasta_dados):
@@ -35,10 +31,9 @@ def executar_pipeline():
             
             # Load
             if df_tratado is not None and not df_tratado.empty:
-                carregar_dados_sinesp(df_tratado, nome_tabela, string_conexao)
+                carregar_dados_sinesp(df_tratado, nome_tabela)
             else:
                 print(f"Sem dados válidos para carregar provenientes do ficheiro {nome_ficheiro}.")
-
 
 def arquivos_ja_baixados(pasta):
     if os.path.exists(pasta):

@@ -1,6 +1,7 @@
 # arquivo: transform.py
 import pandas as pd
 import os
+import time
 
 def transformar_dados_sinesp(caminho_arquivo):
     """
@@ -11,11 +12,20 @@ def transformar_dados_sinesp(caminho_arquivo):
     print(f"\nIniciando transformação: {nome_arquivo}...")
     
     try:
+        
+        inicio = time.perf_counter()
         # 1. Leitura do arquivo
         if caminho_arquivo.endswith('.xlsx'):
             df = pd.read_excel(caminho_arquivo)
         else:
             df = pd.read_csv(caminho_arquivo, sep=';', encoding='utf-8')
+            
+        fim_leitura = time.perf_counter()
+        
+        print(
+            f"Leitura concluída: "
+            f"{fim_leitura - inicio:.2f}s"
+        )
             
         # 2. Definição das colunas (conforme o padrão validado no arquivo de 2023)
         colunas_chave = ['uf', 'municipio', 'evento', 'data_referencia']
@@ -56,6 +66,19 @@ def transformar_dados_sinesp(caminho_arquivo):
             df_final = df
             print("Nenhum registro de Tentativa de Homicídio ou Estupro que exija agrupamento.")
             
+            
+        fim_transformacao = time.perf_counter()
+
+        print(
+            f"Transformação concluída: "
+            f"{fim_transformacao - fim_leitura:.2f}s"
+        )
+
+        print(
+            f"Total transformação: "
+            f"{fim_transformacao - inicio:.2f}s"
+        )
+        
         return df_final
         
     except Exception as e:

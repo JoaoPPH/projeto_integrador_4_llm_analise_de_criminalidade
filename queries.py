@@ -7,58 +7,58 @@ class CriminalidadeService:
     def __init__(self, session: Session):
         self.session = session
 
-    def obter_estatisticas_bairro(self, municipio: str, bairro: str) -> dict:
+    def obter_estatisticas_municipio(self, uf: str, municipio: str) -> dict:
         """
-        Consulta e agrega os totais de crimes por tipo para um determinado bairro/município.
+        Consulta e agrega os totais de ocorrências por evento para um determinado município/uf.
         """
         query = (
             self.session.query(
-                OcorrenciaCriminal.tipo_crime,
-                func.sum(OcorrenciaCriminal.quantidade).label('total_ocorrencias')
+                OcorrenciaCriminal.evento,
+                func.count(OcorrenciaCriminal.id).label('total_ocorrencias')
             )
             .filter(
-                func.lower(OcorrenciaCriminal.municipio) == municipio.lower(),
-                func.lower(OcorrenciaCriminal.bairro) == bairro.lower()
+                func.lower(OcorrenciaCriminal.uf) == uf.lower(),
+                func.lower(OcorrenciaCriminal.municipio) == municipio.lower()
             )
-            .group_by(OcorrenciaCriminal.tipo_crime)
-            .order_by(func.sum(OcorrenciaCriminal.quantidade).desc())
+            .group_by(OcorrenciaCriminal.evento)
+            .order_by(func.count(OcorrenciaCriminal.id).desc())
         )
 
         df = pd.read_sql(query.statement, self.session.bind)
         
         if df.empty:
             return {
+                "uf": uf,
                 "municipio": municipio,
-                "bairro": bairro,
                 "total_geral": 0,
-                "detalhes_crimes": {}
+                "detalhes_eventos": {}
             }
 
-        detalhes = df.set_index('tipo_crime')['total_ocorrencias'].to_dict()
+        detalhes = df.set_index('evento')['total_ocorrencias'].to_dict()
         
         return {
+            "uf": uf,
             "municipio": municipio,
-            "bairro": bairro,
             "total_geral": int(df['total_ocorrencias'].sum()),
-            "detalhes_crimes": detalhes
+            "detalhes_eventos": detalhes
         }
 
-    def buscar_regiao_alternativa(self, municipio: str, bairro_atual: str) -> dict:
+    def buscar_municipio_alternativo(self, uf: str, municipio_atual: str) -> dict:
         """
-        Compara bairros do mesmo município e retorna o bairro com o menor número 
+        Compara municípios do mesmo estado e retorna o município com o menor número 
         total de ocorrências para sugerir como alternativa.
         """
         query = (
             self.session.query(
-                OcorrenciaCriminal.bairro,
-                func.sum(OcorrenciaCriminal.quantidade).label('total_ocorrencias')
+                OcorrenciaCriminal.municipio,
+                func.count(OcorrenciaCriminal.id).label('total_ocorrencias')
             )
             .filter(
-                func.lower(OcorrenciaCriminal.municipio) == municipio.lower(),
-                func.lower(OcorrenciaCriminal.bairro) != bairro_atual.lower()
+                func.lower(OcorrenciaCriminal.uf) == uf.lower(),
+                func.lower(OcorrenciaCriminal.municipio) != municipio_atual.lower()
             )
-            .group_by(OcorrenciaCriminal.bairro)
-            .order_by(func.sum(OcorrenciaCriminal.quantidade).asc())
+            .group_by(OcorrenciaCriminal.municipio)
+            .order_by(func.count(OcorrenciaCriminal.id).asc())
         )
 
         df = pd.read_sql(query.statement, self.session.bind)
@@ -66,10 +66,10 @@ class CriminalidadeService:
         if df.empty:
             return None
 
-        # Pega o bairro de menor incidência
+        # Pega o município de menor incidência
         melhor_opcao = df.iloc[0]
         
-        # Obtém os detalhes de crimes desse bairro alternativo
-        detalhes_alt = self.obter_estatisticas_bairro(municipio, melhor_opcao['bairro'])
+        # Obtém os detalhes de eventos desse município alternativo
+        detalhes_alt = self.obter_estatisticas_municipio(uf, melhor_opcao['municipio'])
         
         return detalhes_alt

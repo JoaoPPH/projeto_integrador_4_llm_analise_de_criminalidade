@@ -16,9 +16,17 @@ def transformar_dados_sinesp(caminho_arquivo):
         inicio = time.perf_counter()
         # 1. Leitura do arquivo
         if caminho_arquivo.endswith('.xlsx'):
+            print("Lendo arquivo Excel (xlsx)...")
             df = pd.read_excel(caminho_arquivo)
         else:
-            df = pd.read_csv(caminho_arquivo, sep=';', encoding='utf-8')
+            print("Lendo arquivo CSV...")
+            df = pd.read_csv(
+                caminho_arquivo,
+                sep=';',
+                encoding='utf-8',
+                engine='pyarrow',
+                decimal=','
+            )
             
         fim_leitura = time.perf_counter()
         
@@ -35,7 +43,7 @@ def transformar_dados_sinesp(caminho_arquivo):
         colunas_valores_presentes = [col for col in colunas_valores if col in df.columns]
         
         
-        # --- NOVO: TRATAMENTO DE NULOS ---
+        # --- TRATAMENTO DE NULOS ---
         # Substitui NaN numéricos por 0
         df[colunas_valores_presentes] = df[colunas_valores_presentes].fillna(0)
                 
@@ -43,6 +51,19 @@ def transformar_dados_sinesp(caminho_arquivo):
         colunas_texto = [c for c in df.columns if c not in colunas_valores_presentes]
         df[colunas_texto] = df[colunas_texto].fillna("Não Informado")
         # ---------------------------------
+        
+        #------ TRATAMENTO PARA O FLOAT -----------
+        if "total_peso" in df.columns:
+            df["total_peso"] = pd.to_numeric(
+                df["total_peso"],
+                errors="raise"
+            )
+            
+        print("Tipo de total_peso:", df["total_peso"].dtype)
+        print("Valores não zero:", (df["total_peso"] != 0).sum())
+        print("Valores nulos:", df["total_peso"].isna().sum())
+        print("Maiores valores:")
+        print(df["total_peso"].nlargest(10))
         
         # 3. Separação dos dados
         mascara_crimes = df['evento'].isin(['Tentativa de Homicídio', 'Estupro'])
@@ -88,7 +109,7 @@ def transformar_dados_sinesp(caminho_arquivo):
 # Se quiser testar o arquivo isoladamente:
 if __name__ == "__main__":
     # Teste apontando para o arquivo de 2023 que você baixou
-    ARQUIVO_TESTE = "./dados_brutos/bancovde-2023.xlsx" 
+    ARQUIVO_TESTE = "./dados_brutos/BancoVDE 2015.csv" 
     if os.path.exists(ARQUIVO_TESTE):
         df_resultado = transformar_dados_sinesp(ARQUIVO_TESTE)
         if df_resultado is not None:

@@ -1,6 +1,6 @@
 import json
 from sqlalchemy.orm import sessionmaker
-from models import init_db, aplicar_indexes, OcorrenciaCriminal
+from models import init_db, OcorrenciaCriminal
 from queries import CriminalidadeService
 from datetime import date
 
@@ -14,7 +14,6 @@ nome_tabela = OcorrenciaCriminal.__tablename__  # Obtém o nome da tabela a part
 # 2. Execução da Consulta
 service = CriminalidadeService(session)
 
-aplicar_indexes(engine, nome_tabela) 
 
 uf_alvo = "ES"
 municipio_alvo = "Vitória"

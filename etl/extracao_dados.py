@@ -9,10 +9,10 @@ def extrair_dados_sinesp(url, pasta_destino):
     print("Acessando a página de extração...")
     
     try:
-        ano = 2016
+        ano = 2020
         arquivos_baixados = 0
         
-        while ano <= 2016:
+        while ano <= 2026:
             link = url + f"bancovde-{ano}.xlsx" + "/@@download/file"  # Atualiza o link para o próximo ano
             nome_arquivo = f"bancovde-{ano}.xlsx"
             

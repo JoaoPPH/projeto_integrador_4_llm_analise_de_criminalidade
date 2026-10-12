@@ -22,25 +22,25 @@ Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os d
 
 ```text
 projeto_integrador_4_llm_analise_de_criminalidade/
-├── database/            # Módulos de conexão e modelo de banco de dados PostgreSQL
-│   ├── main.py          # Script para validação isolada de conexão e payloads
-│   ├── models.py        # Configuração SQLAlchemy, criação de tabelas e índices
-│   └── queries.py       # Consultas analíticas reutilizáveis em SQL
-├── etl/                 # Pipeline de Extração, Transformação e Carga (ETL)
-│   ├── carregamento.py       # Carga otimizada via COPY para PostgreSQL
-│   ├── extracao_dados.py    # Download dos arquivos fonte (SINESP)
-│   ├── orquestrador_etl.py  # Orquestrador do pipeline de dados
-│   └── transformacao_dados.py# Tratamento e padronização dos dados brutos
-├── views/               # Módulos das abas de visualização do Streamlit
-│   ├── aba_geral.py     # 1. Análises Gerais de Crimes
-│   ├── aba_genero.py    # 2. Vítimas por Gênero
-│   ├── aba_armas.py     # 3. Armas Apreendidas
-│   ├── aba_agentes.py   # 4. Morte de Agentes do Estado
-│   └── aba_drogas.py    # 5. Drogas Apreendidas
-├── .env                 # Variáveis de ambiente (string de conexão do banco)
-├── app.py               # Aplicação principal e entrada do Streamlit
-├── requirements.txt     # Dependências e bibliotecas Python do projeto
-└── README.md            # Documentação técnica do projeto
+├── database/                  # Módulos de conexão e modelo de banco de dados PostgreSQL
+│   ├── main.py                # Script para validação isolada de conexão e payloads
+│   ├── models.py              # Configuração SQLAlchemy, criação de tabelas e índices
+│   └── queries.py             # Consultas analíticas reutilizáveis em SQL
+├── etl/                       # Pipeline de Extração, Transformação e Carga (ETL)
+│   ├── carregamento.py        # Carga otimizada via COPY para PostgreSQL
+│   ├── extracao_dados.py      # Download dos arquivos fonte (SINESP)
+│   ├── orquestrador_etl.py    # Orquestrador do pipeline de dados
+│   └── transformacao_dados.py # Tratamento e padronização dos dados brutos
+├── views/                     # Módulos das abas de visualização do Streamlit
+│   ├── aba_geral.py           # 1. Análises Gerais de Crimes
+│   ├── aba_genero.py          # 2. Vítimas por Gênero
+│   ├── aba_armas.py           # 3. Armas Apreendidas
+│   ├── aba_agentes.py         # 4. Morte de Agentes do Estado
+│   └── aba_drogas.py          # 5. Drogas Apreendidas
+├── .env                       # Variáveis de ambiente (string de conexão do banco)
+├── app.py                     # Aplicação principal e entrada do Streamlit
+├── requirements.txt           # Dependências e bibliotecas Python do projeto
+└── README.md                  # Documentação técnica do projeto
 ```
 
 ---
@@ -58,7 +58,6 @@ projeto_integrador_4_llm_analise_de_criminalidade/
 No terminal da máquina local, execute:
 
 ```bash
-# Instalar todas as dependências do projeto
 pip install -r requirements.txt
 ```
 

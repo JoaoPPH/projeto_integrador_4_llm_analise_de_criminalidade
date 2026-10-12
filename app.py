@@ -10,10 +10,10 @@ from views.aba_agentes import renderizar_aba_agentes
 from views.aba_drogas import renderizar_aba_drogas
 
 # Configurando a página do Streamlit
-st.set_page_config(page_title="Análise de Criminalidade - PIC4 - C3", layout="wide")
+st.set_page_config(page_title="Análise de Criminalidade - PIC4", layout="wide")
 
 # Título principal do Dashboard
-st.title("Análise de Criminalidade - Projeto Integrador - C3")
+st.title("Análise de Criminalidade - Projeto Integrador 4")
 
 # Função para carregar os dados diretamente do PostgreSQL (com CACHE do Streamlit)
 @st.cache_data

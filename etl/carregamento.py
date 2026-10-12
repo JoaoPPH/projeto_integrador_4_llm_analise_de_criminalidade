@@ -119,7 +119,7 @@ def carregar_dados_sinesp(df, nome_tabela, caminho_arquivo):
         # 5. Conexão com PostgreSQL
         engine = init_db()
 
-        # 6. COPY para PostgreSQL
+        # 6. COPY para PostgreSQL (Compatível com psycopg2)
         inicio_copy = time.perf_counter()
         conexao = engine.raw_connection()
 
@@ -141,13 +141,9 @@ def carregar_dados_sinesp(df, nome_tabela, caminho_arquivo):
                 )
             """
 
-            with open(caminho_csv, "rb") as arquivo:
-                with cursor.copy(comando_copy) as copy:
-                    while True:
-                        bloco = arquivo.read(1024 * 1024)
-                        if not bloco:
-                            break
-                        copy.write(bloco)
+            # Utiliza copy_expert do psycopg2 abrindo o arquivo temporário CSV
+            with open(caminho_csv, "r", encoding="utf-8") as arquivo:
+                cursor.copy_expert(sql=comando_copy, file=arquivo)
 
             conexao.commit()
 

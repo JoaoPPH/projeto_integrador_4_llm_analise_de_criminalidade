@@ -59,12 +59,12 @@ def renderizar_aba_geral(df):
             text="total", color="total", color_continuous_scale="Blues"
         )
         fig_crimes_estado.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
-        st.plotly_chart(fig_crimes_estado, use_container_width=True)
+        st.plotly_chart(fig_crimes_estado, width="stretch")
         st.divider()
         st.dataframe(
             df_crimes_estado.rename(columns={"uf": "Estado", "total": "Total de Ocorrências"})
             .style.format({"Total de Ocorrências": "{:,.0f}"}),
-            use_container_width=True, hide_index=True
+            width="stretch", hide_index=True
         )
 
     with subabas_t[1]:
@@ -81,12 +81,12 @@ def renderizar_aba_geral(df):
             color="total", color_continuous_scale="Oranges"
         )
         fig_municipios.update_yaxes(autorange="reversed")
-        st.plotly_chart(fig_municipios, use_container_width=True)
+        st.plotly_chart(fig_municipios, width="stretch")
         st.divider()
         st.dataframe(
             df_municipios.rename(columns={"municipio": "Município", "total": "Total de Ocorrências"})
             .style.format({"Total de Ocorrências": "{:,.0f}"}),
-            use_container_width=True, hide_index=True
+            width="stretch", hide_index=True
         )
 
     with subabas_t[2]:
@@ -98,12 +98,12 @@ def renderizar_aba_geral(df):
         
         fig_crime_estado = px.bar(df_crime_mais_frequente, x="uf", y="total", color="evento", title="Crime Mais Frequente por Estado", text="total")
         fig_crime_estado.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
-        st.plotly_chart(fig_crime_estado, use_container_width=True)
+        st.plotly_chart(fig_crime_estado, width="stretch")
         st.divider()
         st.dataframe(
             df_crime_mais_frequente.rename(columns={"uf": "Estado", "evento": "Crime mais frequente", "total": "Total de Ocorrências"})
             .style.format({"Total de Ocorrências": "{:,.0f}"}),
-            use_container_width=True, hide_index=True
+            width="stretch", hide_index=True
         )
 
     with subabas_t[3]:
@@ -111,12 +111,12 @@ def renderizar_aba_geral(df):
         df_historico = df_filtrado_t.groupby("Ano")["total"].sum().reset_index().sort_values("Ano")
         fig_historico = px.line(df_historico, x="Ano", y="total", title="Evolução do Número de Ocorrências", markers=True)
         fig_historico.update_layout(xaxis=dict(tickmode="linear", dtick=1))
-        st.plotly_chart(fig_historico, use_container_width=True)
+        st.plotly_chart(fig_historico, width="stretch")
         st.divider()
         st.dataframe(
             df_historico.rename(columns={"total": "Total de Ocorrências"})
             .style.format({"Total de Ocorrências": "{:,.0f}"}),
-            use_container_width=True, hide_index=True
+            width="stretch", hide_index=True
         )
 
     with subabas_t[4]:
@@ -157,7 +157,7 @@ def renderizar_aba_geral(df):
             fig_regressao.add_trace(go.Scatter(x=df_regressao_ano["Ano"], y=df_regressao_ano["Reta Ajustada"], mode="lines", name="Reta Ajustada", line=dict(dash="dash")))
             fig_regressao.add_trace(go.Scatter(x=anos_futuros["Ano"], y=previsoes, mode="lines+markers", name="Previsão 2027-2029", line=dict(dash="dot")))
             fig_regressao.update_layout(title=f"Regressão Linear - {crime_escolhido} em {uf_escolhida}", xaxis_title="Ano", yaxis_title="Total de Ocorrências", height=600)
-            st.plotly_chart(fig_regressao, use_container_width=True)
+            st.plotly_chart(fig_regressao, width="stretch")
             st.divider()
             df_previsoes = pd.DataFrame({"Ano": anos_futuros["Ano"], "Previsão": previsoes})
-            st.dataframe(df_previsoes.style.format({"Previsão": "{:,.0f}"}), use_container_width=True, hide_index=True)
+            st.dataframe(df_previsoes.style.format({"Previsão": "{:,.0f}"}), width="stretch", hide_index=True)

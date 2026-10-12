@@ -89,12 +89,12 @@ def renderizar_aba_drogas(df):
                     template="plotly_white"
                 )
                 fig_bar_d.update_layout(xaxis=dict(tickmode='linear'))
-                st.plotly_chart(fig_bar_d, use_container_width=True)
+                st.plotly_chart(fig_bar_d, width="stretch")
                 
                 st.markdown("#### Detalhes Consolidados por Ano (Toneladas)")
                 pivot_drogas = drogas_tipo_ano.pivot_table(index='Ano', columns='Droga', values='total_peso_t', aggfunc='sum', fill_value=0)
                 pivot_drogas['Total'] = pivot_drogas.sum(axis=1)
-                st.dataframe(pivot_drogas.style.format("{:,.2f} t"), use_container_width=True)
+                st.dataframe(pivot_drogas.style.format("{:,.2f} t"), width="stretch")
 
             # Sub-aba 3: Análise Geográfica
             with subabas_d[2]:
@@ -120,7 +120,7 @@ def renderizar_aba_drogas(df):
                 )
                 fig_mapa_d.update_geos(fitbounds="locations", visible=False)
                 fig_mapa_d.update_layout(margin={"r":0,"t":50,"l":0,"b":0}, height=600)
-                st.plotly_chart(fig_mapa_d, use_container_width=True)
+                st.plotly_chart(fig_mapa_d, width="stretch")
 
             # Sub-aba 4: Previsões e Tendências
             with subabas_d[3]:
@@ -149,7 +149,7 @@ def renderizar_aba_drogas(df):
                     fig_proj_d.add_trace(go.Scatter(x=anos_futuros_d['Ano'], y=preds_futuras_d, mode='lines+markers', name='Previsão (2026-2030)', line=dict(dash='dot')))
                     
                     fig_proj_d.update_layout(title='Projeções de Apreensões de Drogas', template="plotly_white")
-                    st.plotly_chart(fig_proj_d, use_container_width=True)
+                    st.plotly_chart(fig_proj_d, width="stretch")
                     
                     st.markdown("#### Tabela de Valores Projetados")
                     df_proj_d = pd.DataFrame({'Ano': anos_futuros_d['Ano'], 'Previsão (Toneladas)': preds_futuras_d})

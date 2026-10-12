@@ -54,7 +54,7 @@ def renderizar_aba_genero(df):
         })
         mapa_cores = {'Masculino': '#1f77b4', 'Feminino': '#e377c2', 'Não Informado': '#949494'}
         fig_pizza = px.pie(data_frame=dados_pizza, values='Total', names='Gênero', title='Proporção Total de Vítimas por Gênero', color='Gênero', color_discrete_map=mapa_cores)
-        st.plotly_chart(fig_pizza, use_container_width=True)
+        st.plotly_chart(fig_pizza, width="stretch")
         st.divider()
         
         st.markdown("#### Total de Vítimas por Tipo de Evento")
@@ -89,7 +89,7 @@ def renderizar_aba_genero(df):
             title='Evolução Temporal e Proporção de Vítimas por Gênero', markers=True, text='Porcentagem_Texto', custom_data=['Total Geral']
         )
         fig_linha_g.update_traces(textposition="top center", hovertemplate="<br>".join(["<b>Ano:</b> %{x}", "<b>Quantidade:</b> %{y:,.0f}", "<b>Total Geral:</b> %{customdata[0]:,.0f}"]))
-        st.plotly_chart(fig_linha_g, use_container_width=True)
+        st.plotly_chart(fig_linha_g, width="stretch")
         st.divider()
         st.dataframe(df_historico_g.style.format({'masculino': '{:,.0f}', '% Masculino': '{:.2f}%', 'feminino': '{:,.0f}', '% Feminino': '{:.2f}%', 'nao_informado': '{:,.0f}', '% Não Informado': '{:.2f}%', 'Total Geral': '{:,.0f}'}), hide_index=True)
 
@@ -113,9 +113,9 @@ def renderizar_aba_genero(df):
         )
         fig_mapa_br.update_geos(fitbounds="locations", visible=False)
         fig_mapa_br.update_layout(margin={"r":0,"t":50,"l":0,"b":0}, height=600, template="plotly_white")
-        st.plotly_chart(fig_mapa_br, use_container_width=True)
+        st.plotly_chart(fig_mapa_br, width="stretch")
         st.divider()
-        st.dataframe(df_mapa.sort_values(by='total_vitimas', ascending=False).style.format({'feminino': '{:,.0f}', 'masculino': '{:,.0f}', 'total_vitimas': '{:,.0f}', 'perc_feminino': '{:.2f}%', 'perc_masculino': '{:.2f}%'}), use_container_width=True, hide_index=True)
+        st.dataframe(df_mapa.sort_values(by='total_vitimas', ascending=False).style.format({'feminino': '{:,.0f}', 'masculino': '{:,.0f}', 'total_vitimas': '{:,.0f}', 'perc_feminino': '{:.2f}%', 'perc_masculino': '{:.2f}%'}), width="stretch", hide_index=True)
 
     with subabas_g[3]:
         st.subheader("Análise Histórica e Previsão de Vítimas")
@@ -139,7 +139,7 @@ def renderizar_aba_genero(df):
         fig_previsao.add_trace(go.Scatter(x=df_nacional['Ano'], y=df_nacional['feminino'], mode='lines+markers+text', name='Histórico Feminino', text=df_nacional['pct_fem'].map('{:.1f}%'.format), textposition='bottom center'))
         fig_previsao.add_trace(go.Scatter(x=list(anos_futuros['Ano']), y=list(prev_tot), mode='lines+markers', name='Previsão Total', line=dict(dash='dot'), marker=dict(symbol='star')))
         fig_previsao.update_layout(title='Tendência e Projeção por Gênero', xaxis=dict(tickmode='linear'), yaxis=dict(title='Quantidade'))
-        st.plotly_chart(fig_previsao, use_container_width=True)
+        st.plotly_chart(fig_previsao, width="stretch")
         st.divider()
         
         c1, c2, c3, c4, c5 = st.columns(5)

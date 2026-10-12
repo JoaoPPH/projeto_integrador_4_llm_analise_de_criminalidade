@@ -87,14 +87,14 @@ def renderizar_aba_agentes(df):
             color_continuous_scale='Reds'
         )
         fig_agente_bar.update_yaxes(autorange="reversed")
-        st.plotly_chart(fig_agente_bar, use_container_width=True)
+        st.plotly_chart(fig_agente_bar, width="stretch")
 
         st.dataframe(
             mortes_por_agente.style.format({
                 'Total de Vítimas': '{:,.0f}',
                 'Porcentagem (%)': '{:.2f}%'
             }),
-            use_container_width=True,
+            width="stretch",
             hide_index=True
         )
 
@@ -119,7 +119,7 @@ def renderizar_aba_agentes(df):
             color_continuous_scale='Reds'
         )
         fig_top_estados.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_top_estados, use_container_width=True)
+        st.plotly_chart(fig_top_estados, width="stretch")
 
         st.divider()
 
@@ -152,13 +152,13 @@ def renderizar_aba_agentes(df):
             labels={'Total de Vítimas': 'Total de Vítimas', 'Estado': 'Estado'}
         )
         fig_agente_estado.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_agente_estado, use_container_width=True)
+        st.plotly_chart(fig_agente_estado, width="stretch")
 
         st.dataframe(
             agente_mais_mortes_estado.style.format({
                 'Total de Vítimas': '{:,.0f}'
             }),
-            use_container_width=True,
+            width="stretch",
             hide_index=True
         )
 
@@ -177,7 +177,7 @@ def renderizar_aba_agentes(df):
         )
         fig_evolucao_total.update_traces(line=dict(color='darkred', width=3), marker=dict(size=8))
         fig_evolucao_total.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_evolucao_total, use_container_width=True)
+        st.plotly_chart(fig_evolucao_total, width="stretch")
 
         st.divider()
 
@@ -199,7 +199,7 @@ def renderizar_aba_agentes(df):
             markers=True
         )
         fig_agente_ano.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_agente_ano, use_container_width=True)
+        st.plotly_chart(fig_agente_ano, width="stretch")
 
         tabela_agente_ano = mortes_agente_ano.pivot(index='Ano', columns='agente', values='total_vitima').fillna(0)
         tabela_agente_ano['Total Geral'] = tabela_agente_ano.sum(axis=1)
@@ -208,7 +208,7 @@ def renderizar_aba_agentes(df):
         st.markdown("#### Detalhamento de Mortes por Tipo de Agente e Ano")
         st.dataframe(
             tabela_agente_ano.style.format(format_dict_agente),
-            use_container_width=True
+            width="stretch"
         )
 
         st.divider()
@@ -237,7 +237,7 @@ def renderizar_aba_agentes(df):
             color_discrete_map=mapa_cores_evento
         )
         fig_evento_ano.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_evento_ano, use_container_width=True)
+        st.plotly_chart(fig_evento_ano, width="stretch")
 
         tabela_evento_ano = mortes_evento_ano.pivot(index='Ano', columns='evento', values='total_vitima').fillna(0)
         tabela_evento_ano['Total'] = tabela_evento_ano.sum(axis=1)
@@ -245,7 +245,7 @@ def renderizar_aba_agentes(df):
         format_dict_evento = {col: '{:,.0f}' for col in tabela_evento_ano.columns}
         st.dataframe(
             tabela_evento_ano.style.format(format_dict_evento),
-            use_container_width=True
+            width="stretch"
         )
 
     with subabas_p[2]:
@@ -315,7 +315,7 @@ def renderizar_aba_agentes(df):
             height=600,
             template="plotly_white"
         )
-        st.plotly_chart(fig_mapa_agentes, use_container_width=True)
+        st.plotly_chart(fig_mapa_agentes, width="stretch")
 
         st.divider()
 
@@ -328,7 +328,7 @@ def renderizar_aba_agentes(df):
                 'perc_mortes': '{:.2f}%',
                 'perc_suicidios': '{:.2f}%'
             }),
-            use_container_width=True,
+            width="stretch",
             hide_index=True
         )
 
@@ -392,7 +392,7 @@ def renderizar_aba_agentes(df):
             hovermode='x unified',
             margin=dict(l=40, r=40, t=80, b=40)
         )
-        st.plotly_chart(fig_regressao_ag, use_container_width=True)
+        st.plotly_chart(fig_regressao_ag, width="stretch")
 
         st.divider()
         st.markdown("### Métricas Projetadas (2026 - 2030)")
@@ -462,14 +462,14 @@ def renderizar_aba_agentes(df):
             labels={'Coeficiente': 'Coeficiente (positivo = aumento)', 'Estado': 'Estado', 'Cor': 'Tendência'}
         )
         fig_tendencia_estado.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_tendencia_estado, use_container_width=True)
+        st.plotly_chart(fig_tendencia_estado, width="stretch")
 
         st.dataframe(
             df_tend_sorted_ag[['Estado', 'Coeficiente', 'Previsão 2027', 'Tendência']].style.format({
                 'Coeficiente': '{:.4f}',
                 'Previsão 2027': '{:,.0f}'
             }),
-            use_container_width=True,
+            width="stretch",
             hide_index=True
         )
 
@@ -487,7 +487,7 @@ def renderizar_aba_agentes(df):
             color_discrete_map=mapa_cores_tend,
             title='Quantidade de Estados por Tendência de Mortes de Agentes'
         )
-        st.plotly_chart(fig_resumo_tend, use_container_width=True)
+        st.plotly_chart(fig_resumo_tend, width="stretch")
 
         st.divider()
 
@@ -557,7 +557,7 @@ def renderizar_aba_agentes(df):
                 color_discrete_sequence=['#b22222']
             )
             fig_aumento.update_layout(xaxis=dict(tickangle=90))
-            st.plotly_chart(fig_aumento, use_container_width=True)
+            st.plotly_chart(fig_aumento, width="stretch")
 
         if len(diminuicao_agente_estado) > 0:
             st.markdown("#### Tipo de Agente com Maior Tendência de Diminuição por Estado")
@@ -572,7 +572,7 @@ def renderizar_aba_agentes(df):
                 color_discrete_sequence=['#4682b4']
             )
             fig_diminuicao.update_layout(xaxis=dict(tickangle=90))
-            st.plotly_chart(fig_diminuicao, use_container_width=True)
+            st.plotly_chart(fig_diminuicao, width="stretch")
 
         st.divider()
 
@@ -588,7 +588,7 @@ def renderizar_aba_agentes(df):
                 'Coeficiente_Aumento': '{:.4f}',
                 'Coeficiente_Diminuição': '{:.4f}'
             }),
-            use_container_width=True,
+            width="stretch",
             hide_index=True
         )
 
@@ -654,7 +654,7 @@ def renderizar_aba_agentes(df):
             markers=True
         )
         fig_comp_ag.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_comp_ag, use_container_width=True)
+        st.plotly_chart(fig_comp_ag, width="stretch")
 
         st.divider()
 
@@ -679,7 +679,7 @@ def renderizar_aba_agentes(df):
             markers=True
         )
         fig_proj_modelos.update_layout(xaxis=dict(tickmode='linear'))
-        st.plotly_chart(fig_proj_modelos, use_container_width=True)
+        st.plotly_chart(fig_proj_modelos, width="stretch")
 
         st.dataframe(
             df_proj_modelos.style.format({

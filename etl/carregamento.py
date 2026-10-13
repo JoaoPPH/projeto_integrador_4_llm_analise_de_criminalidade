@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import time
 import tempfile
+import psycopg2
 
 from database.models import init_db
 
@@ -120,7 +121,7 @@ def carregar_dados_sinesp(df, nome_tabela, caminho_arquivo):
         engine = init_db()
 
 
-        # 6. COPY para PostgreSQL
+                # 6. COPY para PostgreSQL
         inicio_copy = time.perf_counter()
         conexao = engine.raw_connection()
 
@@ -142,13 +143,28 @@ def carregar_dados_sinesp(df, nome_tabela, caminho_arquivo):
                 )
             """
 
-            with open(
-                caminho_csv,
-                "r",
-                encoding="utf-8",
-                newline=""
-            ) as arquivo:
-                cursor.copy_expert(comando_copy, arquivo)
+            if hasattr(cursor, "copy_expert"):
+                # psycopg2
+                with open(
+                    caminho_csv, "r", encoding="utf-8", newline=""
+                ) as arquivo:
+                    cursor.copy_expert(comando_copy, arquivo)
+
+            elif hasattr(cursor, "copy"):
+                # psycopg 3
+                with open(caminho_csv, "rb") as arquivo:
+                    with cursor.copy(comando_copy) as copy:
+                        while True:
+                            bloco = arquivo.read(1024 * 1024)
+                            if not bloco:
+                                break
+                            copy.write(bloco)
+
+            else:
+                raise RuntimeError(
+                    "O driver PostgreSQL não oferece uma API "
+                    "de COPY compatível."
+                )
 
             conexao.commit()
 

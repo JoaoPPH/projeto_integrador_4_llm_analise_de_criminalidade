@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from models import OcorrenciaCriminal
+from .models import OcorrenciaCriminal
 
 class CriminalidadeService:
     def __init__(self, session: Session):

@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import time
 import tempfile
+import psycopg2
 
 from database.models import init_db
 
@@ -119,7 +120,8 @@ def carregar_dados_sinesp(df, nome_tabela, caminho_arquivo):
         # 5. Conexão com PostgreSQL
         engine = init_db()
 
-        # 6. COPY para PostgreSQL
+
+                # 6. COPY para PostgreSQL
         inicio_copy = time.perf_counter()
         conexao = engine.raw_connection()
 

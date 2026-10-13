@@ -1,7 +1,7 @@
 import json
 from sqlalchemy.orm import sessionmaker
-from models import init_db, OcorrenciaCriminal
-from queries import CriminalidadeService
+from .models import init_db, OcorrenciaCriminal
+from .queries import CriminalidadeService
 from datetime import date
 
 

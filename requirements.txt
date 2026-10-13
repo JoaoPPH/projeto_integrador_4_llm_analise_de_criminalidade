@@ -1,6 +1,13 @@
+streamlit
+pandas
+numpy
+matplotlib
+plotly
 requests
 beautifulsoup4
-pandas
 openpyxl
 SQLAlchemy
 psycopg2-binary
+python-dotenv
+scikit-learn
+xgboost

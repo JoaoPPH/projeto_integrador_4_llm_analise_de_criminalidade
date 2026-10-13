@@ -9,7 +9,7 @@ def extrair_dados_sinesp(url, pasta_destino):
     print("Acessando a página de extração...")
     
     try:
-        ano = 2020
+        ano = 2015
         arquivos_baixados = 0
         
         while ano <= 2026:

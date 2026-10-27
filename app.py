@@ -9,6 +9,8 @@ from views.aba_armas import renderizar_aba_armas
 from views.aba_agentes import renderizar_aba_agentes
 from views.aba_drogas import renderizar_aba_drogas
 
+from views.aba_analise_ia import renderizar_aba_analise_ia
+
 # Configurando a página do Streamlit
 st.set_page_config(page_title="Análise de Criminalidade - PIC4", layout="wide")
 
@@ -48,7 +50,8 @@ abas = st.tabs([
     "2. Vitimas por Gênero", 
     "3. Armas apreendidas", 
     "4. Morte de Agente", 
-    "5. Drogas Apreendidas"
+    "5. Drogas Apreendidas",
+    "6. Análise com IA"
 ])
 
 # 1. Análise do número de crimes em cada Estado/Município
@@ -70,3 +73,7 @@ with abas[3]:
 # 5. Análise da Quantidade de Drogas apreendidas (total_peso)
 with abas[4]:
     renderizar_aba_drogas(df)
+
+# 5. Análise da Quantidade de Drogas apreendidas (total_peso)
+with abas[5]:
+    renderizar_aba_analise_ia(df)

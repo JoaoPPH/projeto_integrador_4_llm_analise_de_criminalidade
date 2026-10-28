@@ -1,0 +1,438 @@
+{
+  "name": "LLM Análise com RAG (Criminalidade)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "criminalidade/analise-llm",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "585f0b9c-7d13-4409-9f82-e759f3c21b24",
+      "name": "Webhook - Analise LLM",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        144
+      ],
+      "webhookId": "wh-analise-llm"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrair dados do request body\nconst body = $json.body;\n\nconst uf = (body.uf || '').toUpperCase().trim();\nconst municipio = (body.municipio || '').trim();\nconst meio_transporte = body.meio_transporte || 'Não informado';\nconst acompanhantes = body.acompanhantes || 'Não informado';\nconst periodo = body.periodo || 'Não informado';\nconst objetivo = body.objetivo || 'Não informado';\n\nif (!uf || !municipio) {\n  return [{ json: { erro: true, mensagem: 'UF e município são obrigatórios.' } }];\n}\n\nreturn [{\n  json: {\n    uf,\n    municipio,\n    meio_transporte,\n    acompanhantes,\n    periodo,\n    objetivo,\n    erro: false\n  }\n}];"
+      },
+      "id": "0bf4e540-45c7-4557-a84c-8fc55eb074c2",
+      "name": "Validar Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-erro",
+              "leftValue": "={{ $json.erro }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1e44fd34-23ec-4aa7-8691-8f0ed611306d",
+      "name": "Tem Erro?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.mensagem }) }}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "d0c245f2-44fb-445a-830f-b3d0d71668b8",
+      "name": "Resposta Erro",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT evento, SUM(total) as total_ocorrencias FROM ocorrencias_criminalidade WHERE uf = '{{ $json.uf }}' AND municipio = '{{ $json.municipio }}' GROUP BY evento ORDER BY total_ocorrencias DESC;",
+        "options": {}
+      },
+      "id": "2592e68b-28a0-4cde-bfd2-8950f2174a54",
+      "name": "Query Dados Destino",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        288
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "qOYZZP0HayCBXZDV",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst uf = $('Validar Input').item.json.uf;\nconst municipio = $('Validar Input').item.json.municipio;\n\nconst detalhes = {};\nlet totalGeral = 0;\n\nfor (const item of items) {\n  const evento = item.json.evento;\n  const total = parseInt(item.json.total_ocorrencias) || 0;\n  detalhes[evento] = total;\n  totalGeral += total;\n}\n\nreturn [{\n  json: {\n    contexto_destino: {\n      uf,\n      municipio,\n      total_geral: totalGeral,\n      detalhes_eventos: detalhes\n    }\n  }\n}];"
+      },
+      "id": "70d58686-d7b4-434a-abaf-9ee12d17a2b7",
+      "name": "Formatar Dados Destino",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT municipio, SUM(total) as total_ocorrencias FROM ocorrencias_criminalidade WHERE uf = '{{ $('Validar Input').item.json.uf }}' AND municipio != '{{ $('Validar Input').item.json.municipio }}' GROUP BY municipio ORDER BY total_ocorrencias ASC LIMIT 1;",
+        "options": {}
+      },
+      "id": "93c91f4a-c6df-4eb6-8fd7-77d81a9f8e27",
+      "name": "Query Municipio Mais Seguro",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        480,
+        288
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "qOYZZP0HayCBXZDV",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT evento, SUM(total) as total_ocorrencias FROM ocorrencias_criminalidade WHERE uf = '{{ $('Validar Input').item.json.uf }}' AND municipio = '{{ $json.municipio }}' GROUP BY evento ORDER BY total_ocorrencias DESC;",
+        "options": {}
+      },
+      "id": "afe04e5a-dc5d-4f42-a14e-1c61b9df9860",
+      "name": "Query Stats Alternativo",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        720,
+        288
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "qOYZZP0HayCBXZDV",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst uf = $('Validar Input').item.json.uf;\nconst municipioAlt = $('Query Municipio Mais Seguro').item.json.municipio;\nconst contextDestino = $('Formatar Dados Destino').item.json.contexto_destino;\nconst userInput = $('Validar Input').item.json;\n\nconst detalhesAlt = {};\nlet totalGeralAlt = 0;\n\nfor (const item of items) {\n  const evento = item.json.evento;\n  const total = parseInt(item.json.total_ocorrencias) || 0;\n  detalhesAlt[evento] = total;\n  totalGeralAlt += total;\n}\n\nconst sugestaoAlternativa = {\n  uf,\n  municipio: municipioAlt,\n  total_geral: totalGeralAlt,\n  detalhes_eventos: detalhesAlt\n};\n\n// Montar payload para LLM\nconst payload = {\n  contexto_destino: contextDestino,\n  sugestao_alternativa: sugestaoAlternativa,\n  contexto_usuario: {\n    meio_transporte: userInput.meio_transporte,\n    acompanhantes: userInput.acompanhantes,\n    periodo: userInput.periodo,\n    objetivo: userInput.objetivo\n  }\n};\n\nreturn [{ json: { payload } }];"
+      },
+      "id": "63832235-4893-49a4-838c-b66f59c189b4",
+      "name": "Montar Payload LLM",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $json.payload;\n\nconst systemPrompt = `Você é um assistente especializado em segurança pública brasileira. \nSua função é analisar dados criminais de municípios brasileiros e fornecer \nrecomendações personalizadas de segurança para viajantes e moradores.\n\nSempre responda em português brasileiro.\nSeja objetivo, prático e empático.\nBaseie suas recomendações exclusivamente nos dados fornecidos.\nNão invente dados ou estatísticas.`;\n\nconst userPrompt = `Com base nos dados criminais abaixo, forneça uma análise personalizada de segurança.\n\n## DADOS DO MUNICÍPIO DE DESTINO (${payload.contexto_destino.municipio}/${payload.contexto_destino.uf}):\n- Total de ocorrências: ${payload.contexto_destino.total_geral}\n- Detalhes por tipo de crime:\n${Object.entries(payload.contexto_destino.detalhes_eventos).map(([evento, total]) => `  - ${evento}: ${total}`).join('\\n')}\n\n## SUGESTÃO ALTERNATIVA MAIS SEGURA (${payload.sugestao_alternativa.municipio}/${payload.sugestao_alternativa.uf}):\n- Total de ocorrências: ${payload.sugestao_alternativa.total_geral}\n- Detalhes por tipo de crime:\n${Object.entries(payload.sugestao_alternativa.detalhes_eventos).map(([evento, total]) => `  - ${evento}: ${total}`).join('\\n')}\n\n## CONTEXTO DO USUÁRIO:\n- Meio de transporte: ${payload.contexto_usuario.meio_transporte}\n- Acompanhantes: ${payload.contexto_usuario.acompanhantes}\n- Período da viagem: ${payload.contexto_usuario.periodo}\n- Objetivo: ${payload.contexto_usuario.objetivo}\n\n## INSTRUÇÕES:\n1. Faça uma análise comparativa entre o município de destino e a alternativa mais segura\n2. Destaque os principais riscos do destino escolhido\n3. Dê recomendações de segurança personalizadas considerando o meio de transporte, acompanhantes e período\n4. Sugira precauções específicas para os crimes mais frequentes na região\n5. Se apropriado, recomende a alternativa mais segura com justificativa baseada nos dados`;\n\nreturn [{\n  json: {\n    system_prompt: systemPrompt,\n    user_prompt: userPrompt,\n    payload: payload\n  }\n}];"
+      },
+      "id": "fb37637e-5dd3-4c33-b0a0-6a68939fe645",
+      "name": "Construir Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"qwen/qwen3.8-27b\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": {{ JSON.stringify($json.system_prompt) }}\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.user_prompt) }}\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 500,\n  \"top_p\": 0.9\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "fc3c4019-5782-490b-9b3b-3bebe6573fe2",
+      "name": "Chamar Groq LLM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        288
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2Uuj0yQIeB1gKzbe",
+          "name": "Header Auth account"
+        },
+        "httpBearerAuth": {
+          "id": "JYDOtCO9f3PGLVao",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $json;\nconst payload = $('Montar Payload LLM').item.json.payload;\n\nlet analise = '';\nlet model = '';\nlet tokens_used = 0;\n\ntry {\n  analise = response.choices[0].message.content;\n  model = response.model || 'llama-3.1-70b-versatile';\n  tokens_used = response.usage ? response.usage.total_tokens : 0;\n} catch(e) {\n  analise = 'Não foi possível gerar a análise. Tente novamente.';\n}\n\nreturn [{\n  json: {\n    success: true,\n    analise: analise,\n    modelo: model,\n    tokens_utilizados: tokens_used,\n    dados: {\n      destino: payload.contexto_destino,\n      alternativa: payload.sugestao_alternativa,\n      contexto_usuario: payload.contexto_usuario\n    }\n  }\n}];"
+      },
+      "id": "e4ea9b8a-49b2-4ca8-83c7-837049622711",
+      "name": "Formatar Resposta LLM",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "7668895e-03de-498b-a8be-32c8192a5c8e",
+      "name": "Resposta Final",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        288
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Analise LLM": {
+      "main": [
+        [
+          {
+            "node": "Validar Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Input": {
+      "main": [
+        [
+          {
+            "node": "Tem Erro?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Erro?": {
+      "main": [
+        [
+          {
+            "node": "Resposta Erro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Dados Destino",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Dados Destino": {
+      "main": [
+        [
+          {
+            "node": "Formatar Dados Destino",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Dados Destino": {
+      "main": [
+        [
+          {
+            "node": "Query Municipio Mais Seguro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Municipio Mais Seguro": {
+      "main": [
+        [
+          {
+            "node": "Query Stats Alternativo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Stats Alternativo": {
+      "main": [
+        [
+          {
+            "node": "Montar Payload LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar Payload LLM": {
+      "main": [
+        [
+          {
+            "node": "Construir Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir Prompt": {
+      "main": [
+        [
+          {
+            "node": "Chamar Groq LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamar Groq LLM": {
+      "main": [
+        [
+          {
+            "node": "Formatar Resposta LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Resposta LLM": {
+      "main": [
+        [
+          {
+            "node": "Resposta Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0a13721c-6916-4e73-823f-1367cb96b9ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "566292b4ceb3559a61531d52c82124fe1c63604349cf058ebf01f8a137221fb0"
+  },
+  "id": "N8IJHtYQDDgXgS7i",
+  "tags": [
+    {
+      "updatedAt": "2026-10-15T01:21:04.409Z",
+      "createdAt": "2026-10-15T01:21:04.409Z",
+      "id": "EOzxC2KAVr9x2qEC",
+      "name": "criminalidade"
+    },
+    {
+      "updatedAt": "2026-10-15T01:22:45.681Z",
+      "createdAt": "2026-10-15T01:22:45.681Z",
+      "id": "GYh226zsmhVrIQgL",
+      "name": "rag"
+    },
+    {
+      "updatedAt": "2026-10-15T01:22:45.639Z",
+      "createdAt": "2026-10-15T01:22:45.639Z",
+      "id": "Rcxcm1M0fo7ueiXB",
+      "name": "llm"
+    }
+  ]
+}

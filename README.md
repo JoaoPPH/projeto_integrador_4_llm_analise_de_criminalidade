@@ -31,7 +31,7 @@ projeto_integrador_4_llm_analise_de_criminalidade/
 │   ├── extracao_dados.py      # Download dos arquivos fonte (SINESP)
 │   ├── orquestrador_etl.py    # Orquestrador do pipeline de dados
 │   └── transformacao_dados.py # Tratamento e padronização dos dados brutos
-├── evals/                     # Testes do sistema
+├── evals/                     # Avaliações do sistema
 │   ├── avaliacao_ia.py        # Código com a avaliação manual da resposta da IA
 │   └── resultado_avaliacao.md # Relatório e as limitações identificadas nos testes e avaliação atual
 ├── services/                  # Serviços de integração externa

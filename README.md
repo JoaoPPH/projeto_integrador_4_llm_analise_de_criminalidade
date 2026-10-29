@@ -31,8 +31,13 @@ projeto_integrador_4_llm_analise_de_criminalidade/
 │   ├── extracao_dados.py      # Download dos arquivos fonte (SINESP)
 │   ├── orquestrador_etl.py    # Orquestrador do pipeline de dados
 │   └── transformacao_dados.py # Tratamento e padronização dos dados brutos
+├── evals/                     # Testes do sistema
+│   ├── avaliacao_ia.py        # Código com a avaliação manual da resposta da IA
+│   └── resultado_avaliacao.md # Relatório e as limitações identificadas nos testes e avaliação atual
 ├── services/                  # Serviços de integração externa
 │   └── n8n_client.py          # Cliente de comunicação Webhook com o fluxo LLM do N8N
+├── tests/                     # Testes do sistema
+│   └── test_n8n_client.py     # Código com os testes do sistema para rodar no terminal
 ├── views/                     # Módulos das abas de visualização do Streamlit
 │   ├── aba_geral.py           # 1. Análises Gerais de Crimes
 │   ├── aba_genero.py          # 2. Vítimas por Gênero

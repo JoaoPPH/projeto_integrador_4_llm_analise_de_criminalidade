@@ -14,7 +14,15 @@ Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os d
 
 **Tema:** Análise de Criminalidade  
 **Disciplina:** Projeto Integrador 4  
-**Professor Responsável:** Howard Cruz  
+**Professor Responsável:** Howard Cruz 
+
+---
+
+## 🎬 Vídeo do Protóripo
+
+Vídeo publicado no YouTube com a apresentação do protótipo da aplicação, demonstrando a viabilidade técnica da solução:
+
+https://youtu.be/oeBOw0o7HhY
 
 ---
 
@@ -73,7 +81,7 @@ pip install -r requirements.txt
 
 ### 2. Configurar o Banco de Dados PostgreSQL
 
-#### Opção A: Subir via docker para rodar localmente
+#### Opção A: Subir via docker para rodar localmente (Recomendado)
 Para criar e iniciar uma instância do PostgreSQL via Docker
 
 ##### 2.1 Criar o Postgres no docker

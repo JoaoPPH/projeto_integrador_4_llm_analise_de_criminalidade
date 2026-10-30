@@ -18,7 +18,7 @@ Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os d
 
 ---
 
-## 🎬 Vídeo do Protóripo
+## 🎬 Vídeo do Protótipo
 
 Vídeo publicado no YouTube com a apresentação do protótipo da aplicação, demonstrando a viabilidade técnica da solução:
 

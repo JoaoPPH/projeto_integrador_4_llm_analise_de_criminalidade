@@ -106,12 +106,7 @@ python -m etl.orquestrador_etl
 > **Nota:** O script criará a tabela `ocorrencias_criminalidade`, baixará as bases e criará os índices de busca otimizados no PostgreSQL.
 
 #### Opção B: Configuração da Variável de Ambiente (`.env`) para rodar com a nuvem
-Crie um arquivo chamado `.env` na raiz do projeto com a URL de conexão do PostgreSQL:
-
-```env
-PASTA_DADOS=./dados_brutos
-DATABASE_URL=postgresql://neondb_owner:npg_9OVhEkPKmL0i@ep-sweet-waterfall-b5c88b0h-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-```
+Crie um arquivo chamado `.env` na raiz do projeto com a URL de conexão do PostgreSQL
 
 ---
 

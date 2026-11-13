@@ -1,0 +1,211 @@
+# Projeto Integrador 4 - LLM - Análise de Criminalidade
+
+Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os dados de criminalidade pública brasileira são processados através de um pipeline ETL, armazenados em um banco de dados relacional PostgreSQL, disponibilizados em um dashboard interativo no Streamlit e integrados a um **LLM via N8N** para análises e recomendações personalizadas de segurança.
+
+---
+
+## 👥 Grupo
+- Estevão Matos de Souza
+- Gabriel Ferreira Paulo
+- João Pereira Paes Henriques
+- Lorena Moreira de Nadai
+- Pedro de Oliveira Guimarães
+- Thaís Peroni Custodio Lino
+
+**Tema:** Análise de Criminalidade  
+**Disciplina:** Projeto Integrador 4  
+**Professor Responsável:** Howard Cruz 
+
+---
+
+## 🎬 Vídeo do Protótipo
+
+Vídeo publicado no YouTube com a apresentação do protótipo da aplicação, demonstrando a viabilidade técnica da solução:
+
+https://youtu.be/oeBOw0o7HhY
+
+---
+
+## 📁 Estrutura de Pastas e Arquivos
+
+```text
+projeto_integrador_4_llm_analise_de_criminalidade/
+├── database/                  # Módulos de conexão e modelo de banco de dados PostgreSQL
+│   ├── main.py                # Script para validação isolada de conexão e payloads
+│   ├── models.py              # Configuração SQLAlchemy, criação de tabelas e índices
+│   └── queries.py             # Consultas analíticas reutilizáveis em SQL
+├── etl/                       # Pipeline de Extração, Transformação e Carga (ETL)
+│   ├── carregamento.py        # Carga otimizada via COPY para PostgreSQL
+│   ├── extracao_dados.py      # Download dos arquivos fonte (SINESP)
+│   ├── orquestrador_etl.py    # Orquestrador do pipeline de dados
+│   └── transformacao_dados.py # Tratamento e padronização dos dados brutos
+├── evals/                     # Avaliações do sistema
+│   ├── avaliacao_ia.py        # Código com a avaliação manual da resposta da IA
+│   └── resultado_avaliacao.md # Relatório e as limitações identificadas nos testes e avaliação atual
+├── services/                  # Serviços de integração externa
+│   └── n8n_client.py          # Cliente de comunicação Webhook com o fluxo LLM do N8N
+├── tests/                     # Testes do sistema
+│   └── test_n8n_client.py     # Código com os testes do sistema para rodar no terminal
+├── views/                     # Módulos das abas de visualização do Streamlit
+│   ├── aba_geral.py           # 1. Análises Gerais de Crimes
+│   ├── aba_genero.py          # 2. Vítimas por Gênero
+│   ├── aba_armas.py           # 3. Armas Apreendidas
+│   ├── aba_agentes.py         # 4. Morte de Agentes do Estado
+│   ├── aba_drogas.py          # 5. Drogas Apreendidas
+│   └── aba_analise_ia.py      # 6. Análise com Inteligência Artificial (LLM)
+├── .env                       # Variáveis de ambiente (conexão do banco e URL do N8N)
+├── app.py                     # Aplicação principal e entrada do Streamlit
+├── requirements.txt           # Dependências e bibliotecas Python do projeto
+└── README.md                  # Documentação técnica do projeto
+```
+
+---
+
+## 🚀 Como Executar o Projeto Localmente
+
+### Pré-requisitos
+- **Python 3.10+** instalado
+- **Docker** e **Docker Compose** (opcional, para subir o PostgreSQL em container)
+
+---
+
+### 1. Clonar o Repositório e Instalar Dependências
+
+No terminal da máquina local, execute:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 2. Configurar o Banco de Dados PostgreSQL
+
+#### Opção A: Subir via docker para rodar localmente (Recomendado)
+Para criar e iniciar uma instância do PostgreSQL via Docker
+
+##### 2.1 Criar o Postgres no docker
+```bash
+docker run --name postgres-pic4 -e POSTGRES_PASSWORD=suasenha -p 5432:5432 -d postgres:15
+```
+
+##### 2.2 Configuração da Variável de Ambiente (`.env`)
+Crie um arquivo chamado `.env` na raiz do projeto com a URL de conexão do PostgreSQL:
+
+```env
+DATABASE_URL=postgresql://postgres:suasenha@localhost:5432/postgres
+```
+
+##### 2.3 Executar o Pipeline ETL
+Para baixar, tratar e carregar a base de dados histórica para o banco de dados PostgreSQL, execute:
+
+```bash
+python -m etl.orquestrador_etl
+```
+
+> **Nota:** O script criará a tabela `ocorrencias_criminalidade`, baixará as bases e criará os índices de busca otimizados no PostgreSQL.
+
+#### Opção B: Configuração da Variável de Ambiente (`.env`) para rodar com a nuvem
+Crie um arquivo chamado `.env` na raiz do projeto com a URL de conexão do PostgreSQL
+
+---
+
+### 3. Iniciar o Dashboard Interativo (Streamlit)
+
+Após o término da execução do ETL, inicie o aplicativo web:
+
+```bash
+streamlit run app.py
+```
+
+O dashboard abrirá automaticamente no navegador no endereço `http://localhost:8501`.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+- **Linguagem:** Python 3.10+
+- **Interface Web:** Streamlit
+- **Integração LLM / IA:** N8N Webhook & Agentic Workflow
+- **Visualização de Dados:** Plotly Express / Plotly Graph Objects
+- **Banco de Dados:** PostgreSQL & SQLAlchemy
+- **Machine Learning & Regressão:** Scikit-Learn, XGBoost, Random Forest
+- **Processamento de Dados:** Pandas & NumPy
+
+
+## 🧪 Testes Unitários e Avaliação da IA
+
+### Como executar os testes unitários
+
+**1.** Abra o projeto no VS Code e abra um terminal na pasta principal do repositório.
+
+**2.** Instale o pytest, caso ainda não esteja instalado:
+
+```bash
+python -m pip install pytest==8.3.5
+```
+
+**3.** Execute os três testes unitários:
+
+```bash
+python -m pytest tests/test_n8n_client.py -v
+```
+
+O pytest executará automaticamente os seguintes testes:
+
+- `test_uf_obrigatoria`: verifica se uma UF vazia gera erro.
+- `test_municipio_obrigatorio`: verifica se um município vazio gera erro.
+- `test_resposta_sucesso_n8n`: simula uma resposta válida do n8n e verifica se ela é retornada corretamente.
+
+**Resultado esperado:** `3 passed`.
+
+Os testes utilizam simulação da requisição HTTP, portanto não precisam que o servidor n8n esteja disponível.
+
+### Como executar a avaliação manual da IA
+
+**1.** No terminal, estando na pasta principal do projeto, execute:
+
+```bash
+python evals/avaliacao_ia.py
+```
+
+**2.** O programa exibirá a mensagem:
+
+```text
+Cole aqui a resposta da IA:
+```
+
+Cole uma resposta textual gerada pela IA e pressione **Enter**. A resposta deve estar em uma única linha para esse script.
+
+**3.** O programa exibirá quatro critérios, um de cada vez:
+
+- **Transporte:** a resposta considera os cuidados relacionados ao meio de transporte?
+- **Acompanhantes:** a resposta oferece recomendações adequadas para os acompanhantes?
+- **Período:** a resposta considera o horário da viagem?
+- **Objetivo:** a resposta apresenta orientações relacionadas ao objetivo da viagem?
+
+**4.** Para cada critério, digite uma nota e pressione **Enter**:
+
+| Nota | Significado |
+|---|---|
+| `0` | Não atendeu ao critério |
+| `1` | Atendeu parcialmente |
+| `2` | Atendeu ao critério |
+
+**5.** Após as quatro notas, o programa mostrará a pontuação total, de **0 a 8 pontos**.
+
+**Exemplo de avaliação realizada na C2:**
+
+| Critério | Nota |
+|---|---:|
+| Transporte | 2 |
+| Acompanhantes | 1 |
+| Período | 2 |
+| Objetivo | 1 |
+| **Total** | **6/8 (75%)** |
+
+**Observações importantes:**
+
+- A avaliação é **manual**: o script não chama o n8n nem gera uma resposta automaticamente.
+- A pontuação depende da análise da pessoa que está avaliando.
+- O resultado de 6/8 foi obtido com um trecho resumido de uma resposta real da IA, não com a resposta completa.
+- O arquivo `evals/resultado_avaliacao.md` contém o relatório e as limitações identificadas.

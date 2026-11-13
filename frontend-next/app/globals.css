@@ -1,0 +1,225 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Sistema de design — "noite cartográfica / farol"
+ * Canvas escuro de mapa noturno, acento âmbar (sinal/orientação),
+ * ciano para a alternativa segura, escala sequencial só nos dados.
+ * ------------------------------------------------------------------ */
+
+@theme {
+  --color-canvas: #0b1220;
+  --color-canvas-2: #0e1626;
+  --color-panel: #141e33;
+  --color-panel-2: #1a2740;
+  --color-line: #243149;
+  --color-line-2: #2d3d5a;
+
+  --color-ink: #eaf0f8;
+  --color-muted: #96a6c0;
+  --color-faint: #64748b;
+
+  --color-beacon: #ffc247;
+  --color-beacon-deep: #e8a613;
+  --color-cyan: #53c4e8;
+
+  --color-risk-low: #3fb68b;
+  --color-risk-mid: #f0a830;
+  --color-risk-high: #e5533c;
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-plex);
+  --font-mono: var(--font-plex-mono);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  /* Textura cartográfica sutil: grade fina + brilho de farol no topo. */
+  background-image:
+    radial-gradient(
+      1100px 620px at 82% -8%,
+      rgba(255, 194, 71, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 600px at 8% 4%,
+      rgba(83, 196, 232, 0.05),
+      transparent 55%
+    ),
+    linear-gradient(to right, rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--color-beacon);
+  color: #1a1206;
+}
+
+/* Foco visível e consistente em tudo que é interativo. */
+:where(a, button, select, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-beacon);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Barra de rolagem discreta no tema escuro. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-2) transparent;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), Georgia, serif;
+  }
+  .num {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+  .panel {
+    background-color: var(--color-panel);
+    border: 1px solid var(--color-line);
+  }
+  .hairline {
+    border-color: var(--color-line);
+  }
+}
+
+/* --------- Narrativa da IA (markdown) --------- */
+.prose-ia {
+  color: var(--color-ink);
+  line-height: 1.72;
+  font-size: 1.0625rem;
+  max-width: 68ch;
+}
+.prose-ia > * + * {
+  margin-top: 1rem;
+}
+.prose-ia h1,
+.prose-ia h2,
+.prose-ia h3 {
+  font-family: var(--font-display), serif;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-ink);
+  margin-top: 1.9rem;
+}
+.prose-ia h1 {
+  font-size: 1.6rem;
+}
+.prose-ia h2 {
+  font-size: 1.32rem;
+}
+.prose-ia h3 {
+  font-size: 1.12rem;
+}
+.prose-ia strong {
+  color: var(--color-beacon);
+  font-weight: 600;
+}
+.prose-ia a {
+  color: var(--color-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-ia ul,
+.prose-ia ol {
+  padding-left: 1.3rem;
+}
+.prose-ia ul {
+  list-style: none;
+}
+.prose-ia ul > li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+.prose-ia ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: var(--color-beacon);
+  box-shadow: 0 0 10px rgba(255, 194, 71, 0.5);
+}
+.prose-ia ol {
+  list-style: decimal;
+}
+.prose-ia li + li {
+  margin-top: 0.5rem;
+}
+.prose-ia blockquote {
+  border-left: 3px solid var(--color-cyan);
+  padding: 0.3rem 0 0.3rem 1rem;
+  color: var(--color-muted);
+  background: rgba(83, 196, 232, 0.05);
+}
+.prose-ia code {
+  font-family: var(--font-mono), monospace;
+  background: var(--color-canvas-2);
+  border: 1px solid var(--color-line);
+  padding: 0.05rem 0.35rem;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+.prose-ia hr {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+  margin: 1.5rem 0;
+}
+.prose-ia table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.prose-ia th,
+.prose-ia td {
+  border: 1px solid var(--color-line);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+}
+.prose-ia th {
+  background: var(--color-panel-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

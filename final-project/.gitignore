@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Ambiente
+.env*
+
+# Node (frontend-next, usado para desenvolver a UI)
+node_modules/
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+*.pem

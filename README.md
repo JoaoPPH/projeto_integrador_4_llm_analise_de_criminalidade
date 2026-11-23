@@ -61,6 +61,7 @@ projeto_integrador_4_llm_analise_de_criminalidade/
 ├── app.py                     # [Versão C2] Aplicação principal e entrada do Streamlit
 ├── requirements.txt           # [Versão C2] Dependências e bibliotecas Python do projeto
 └── README.md                  # Documentação técnica do projeto
+```
 
 ---
 

@@ -1,6 +1,8 @@
 # Projeto Integrador 4 - LLM - Análise de Criminalidade
 
-Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os dados de criminalidade pública brasileira são processados através de um pipeline ETL, armazenados em um banco de dados relacional PostgreSQL, disponibilizados em um dashboard interativo no Streamlit e integrados a um **LLM via N8N** para análises e recomendações personalizadas de segurança.
+> **Aviso de versões (C2 x C3):** Este repositório contém a versão anterior do projeto (**Entrega C2**), baseada em **Streamlit** e integração com **LLM via N8N**, na raiz do repositório. Para o **MVP da C3** (**Rota Segura** — API em FastAPI, interface em Next.js/export estático e integração com LLM via Groq), acesse as pastas [`final-project/`](./final-project/) e [`frontend-next/`](./frontend-next/) e consulte seus respectivos `README.md` ([`final-project/README.md`](./final-project/README.md) e [`frontend-next/README.md`](./frontend-next/README.md)).
+
+Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os dados de criminalidade pública brasileira são processados através de um pipeline ETL, armazenados em um banco de dados relacional PostgreSQL, disponibilizados em um dashboard interativo e integrados a um LLM para análises e recomendações personalizadas de segurança.
 
 ---
 
@@ -18,7 +20,7 @@ Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os d
 
 ---
 
-## 🎬 Vídeo do Protótipo
+## 🎬 Vídeo do Protótipo (Entrega C2)
 
 Vídeo publicado no YouTube com a apresentação do protótipo da aplicação, demonstrando a viabilidade técnica da solução:
 
@@ -30,23 +32,25 @@ https://youtu.be/oeBOw0o7HhY
 
 ```text
 projeto_integrador_4_llm_analise_de_criminalidade/
-├── database/                  # Módulos de conexão e modelo de banco de dados PostgreSQL
+├── database/                  # [Versão C2] Módulos de conexão e modelo PostgreSQL
 │   ├── main.py                # Script para validação isolada de conexão e payloads
 │   ├── models.py              # Configuração SQLAlchemy, criação de tabelas e índices
 │   └── queries.py             # Consultas analíticas reutilizáveis em SQL
-├── etl/                       # Pipeline de Extração, Transformação e Carga (ETL)
+├── etl/                       # [Versão C2] Pipeline de Extração, Transformação e Carga (ETL)
 │   ├── carregamento.py        # Carga otimizada via COPY para PostgreSQL
 │   ├── extracao_dados.py      # Download dos arquivos fonte (SINESP)
 │   ├── orquestrador_etl.py    # Orquestrador do pipeline de dados
 │   └── transformacao_dados.py # Tratamento e padronização dos dados brutos
-├── evals/                     # Avaliações do sistema
+├── evals/                     # [Versão C2] Avaliações do sistema
 │   ├── avaliacao_ia.py        # Código com a avaliação manual da resposta da IA
 │   └── resultado_avaliacao.md # Relatório e as limitações identificadas nos testes e avaliação atual
-├── services/                  # Serviços de integração externa
+├── final-project/             # [MVP C3 - Rota Segura] Backend FastAPI + UI estática publicada (ver README.md)
+├── frontend-next/             # [MVP C3 - Rota Segura] Interface em desenvolvimento Next.js (ver README.md)
+├── services/                  # [Versão C2] Serviços de integração externa
 │   └── n8n_client.py          # Cliente de comunicação Webhook com o fluxo LLM do N8N
-├── tests/                     # Testes do sistema
+├── tests/                     # [Versão C2] Testes do sistema
 │   └── test_n8n_client.py     # Código com os testes do sistema para rodar no terminal
-├── views/                     # Módulos das abas de visualização do Streamlit
+├── views/                     # [Versão C2] Módulos das abas de visualização do Streamlit
 │   ├── aba_geral.py           # 1. Análises Gerais de Crimes
 │   ├── aba_genero.py          # 2. Vítimas por Gênero
 │   ├── aba_armas.py           # 3. Armas Apreendidas
@@ -54,15 +58,20 @@ projeto_integrador_4_llm_analise_de_criminalidade/
 │   ├── aba_drogas.py          # 5. Drogas Apreendidas
 │   └── aba_analise_ia.py      # 6. Análise com Inteligência Artificial (LLM)
 ├── .env                       # Variáveis de ambiente (conexão do banco e URL do N8N)
-├── app.py                     # Aplicação principal e entrada do Streamlit
-├── requirements.txt           # Dependências e bibliotecas Python do projeto
+├── app.py                     # [Versão C2] Aplicação principal e entrada do Streamlit
+├── requirements.txt           # [Versão C2] Dependências e bibliotecas Python do projeto
 └── README.md                  # Documentação técnica do projeto
-```
 
 ---
 
 ## 🚀 Como Executar o Projeto Localmente
 
+## MVP da C3 — Rota Segura (`final-project/` e `frontend-next/`)
+Para rodar o sistema atual do MVP da C3:
+- **Backend + UI publicada (FastAPI em processo único):** siga as instruções em final-project/README.md (python run.py na pasta final-project/).
+- **Desenvolvimento da interface (Next.js):** siga as instruções em frontend-next/README.md.
+
+## Versão Anterior — Entrega C2 (Streamlit + N8N)
 ### Pré-requisitos
 - **Python 3.10+** instalado
 - **Docker** e **Docker Compose** (opcional, para subir o PostgreSQL em container)

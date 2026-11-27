@@ -2,7 +2,7 @@
 
 > **Aviso de versões (C2 x C3):** Este repositório contém a versão anterior do projeto (**Entrega C2**), baseada em **Streamlit** e integração com **LLM via N8N**, na raiz do repositório. Para o **MVP da C3** (**Rota Segura** — API em FastAPI, interface em Next.js/export estático e integração com LLM via Groq), acesse as pastas [`final-project/`](./final-project/) e [`frontend-next/`](./frontend-next/) e consulte seus respectivos `README.md` ([`final-project/README.md`](./final-project/README.md) e [`frontend-next/README.md`](./frontend-next/README.md)).
 
-Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os dados de criminalidade pública brasileira são processados através de um pipeline ETL, armazenados em um banco de dados relacional PostgreSQL, disponibilizados em um dashboard interativo e integrados a um LLM para análises e recomendações personalizadas de segurança.
+Sistema desenvolvido para a disciplina de **Projeto Integrador IV**, no qual os dados de criminalidade pública brasileira são processados através de um pipeline ETL, armazenados em um banco de dados relacional PostgreSQL, disponibilizados em um dashboard interativo e integrados a um LLM para análises e recomendações personalizadas de segurança.
 
 ---
 
@@ -15,8 +15,28 @@ Sistema desenvolvido para a disciplina de **Projeto Integrador 4**, no qual os d
 - Thaís Peroni Custodio Lino
 
 **Tema:** Análise de Criminalidade  
-**Disciplina:** Projeto Integrador 4  
-**Professor Responsável:** Howard Cruz 
+**Disciplina:** Projeto Integrador IV (2026/2) — FAESA  
+**Professor Responsável:** Howard Cruz Roatti
+
+---
+
+## 📊 Análise de Impacto Social e IA Responsável (Entrega C3)
+
+Dando continuidade ao escopo e aos indicadores definidos na **C1**, o **Rota Segura** busca democratizar o acesso a estatísticas públicas de segurança, transformando dados históricos em orientações contextualizadas para deslocamentos e apoiando a leitura de indicadores por cidadãos, viajantes e gestores.
+
+- **Comunidade impactada:** Cidadãos, moradores, viajantes e turistas em deslocamento, além de gestores de segurança pública e ONGs que consultam indicadores regionais.
+- **Indicadores acompanhados:** Volume e cobertura dos dados históricos consultáveis, desempenho/latência com cache, qualidade e fidelidade das respostas nos *evals* da IA e disponibilidade contínua via *fallback* baseado nos dados oficiais.
+- **IA Responsável (LGPD, Segurança, Ética e Custo):** Uso de dados públicos agregados sem identificação pessoal, validação de entradas e sanitização de saída, atenção a vieses e caráter orientativo das recomendações, além de uso de cache e camada gratuita para sustentabilidade e baixo custo.
+
+📄 **Documento completo:** Consulte a análise detalhada em [`docs/analise_impacto.md`](./docs/analise_impacto.md).
+
+---
+
+## URL Pública do Deploy (Entrega C3)
+
+O deploy do MVP do projeto foi realizando utilizando do Vercel:
+
+https://projeto-integrador-rota-segura.vercel.app
 
 ---
 
@@ -28,39 +48,50 @@ https://youtu.be/oeBOw0o7HhY
 
 ---
 
+## 🎬 Vídeo do MVP (Entrega C3)
+
+Vídeo publicado no YouTube com a apresentação do MVP do sistema Rota Segura, demonstrando o sistema em funcionamento:
+
+
+
+---
+
 ## 📁 Estrutura de Pastas e Arquivos
 
 ```text
 projeto_integrador_4_llm_analise_de_criminalidade/
-├── database/                  # [Versão C2] Módulos de conexão e modelo PostgreSQL
-│   ├── main.py                # Script para validação isolada de conexão e payloads
-│   ├── models.py              # Configuração SQLAlchemy, criação de tabelas e índices
-│   └── queries.py             # Consultas analíticas reutilizáveis em SQL
-├── etl/                       # [Versão C2] Pipeline de Extração, Transformação e Carga (ETL)
-│   ├── carregamento.py        # Carga otimizada via COPY para PostgreSQL
-│   ├── extracao_dados.py      # Download dos arquivos fonte (SINESP)
-│   ├── orquestrador_etl.py    # Orquestrador do pipeline de dados
-│   └── transformacao_dados.py # Tratamento e padronização dos dados brutos
-├── evals/                     # [Versão C2] Avaliações do sistema
-│   ├── avaliacao_ia.py        # Código com a avaliação manual da resposta da IA
-│   └── resultado_avaliacao.md # Relatório e as limitações identificadas nos testes e avaliação atual
-├── final-project/             # [MVP C3 - Rota Segura] Backend FastAPI + UI estática publicada (ver README.md)
-├── frontend-next/             # [MVP C3 - Rota Segura] Interface em desenvolvimento Next.js (ver README.md)
-├── services/                  # [Versão C2] Serviços de integração externa
-│   └── n8n_client.py          # Cliente de comunicação Webhook com o fluxo LLM do N8N
-├── tests/                     # [Versão C2] Testes do sistema
-│   └── test_n8n_client.py     # Código com os testes do sistema para rodar no terminal
-├── views/                     # [Versão C2] Módulos das abas de visualização do Streamlit
-│   ├── aba_geral.py           # 1. Análises Gerais de Crimes
-│   ├── aba_genero.py          # 2. Vítimas por Gênero
-│   ├── aba_armas.py           # 3. Armas Apreendidas
-│   ├── aba_agentes.py         # 4. Morte de Agentes do Estado
-│   ├── aba_drogas.py          # 5. Drogas Apreendidas
-│   └── aba_analise_ia.py      # 6. Análise com Inteligência Artificial (LLM)
-├── .env                       # Variáveis de ambiente (conexão do banco e URL do N8N)
-├── app.py                     # [Versão C2] Aplicação principal e entrada do Streamlit
-├── requirements.txt           # [Versão C2] Dependências e bibliotecas Python do projeto
-└── README.md                  # Documentação técnica do projeto
+├── database/                                                       # [Versão C2] Módulos de conexão e modelo PostgreSQL
+│   ├── main.py                                                     # Script para validação isolada de conexão e payloads
+│   ├── models.py                                                   # Configuração SQLAlchemy, criação de tabelas e índices
+│   └── queries.py                                                  # Consultas analíticas reutilizáveis em SQL
+├── docs/                                                           # Documentos PDF e Markdown exigidos no edital
+│   ├── Analise_de_criminalidade_Projeto_Integrador_4_Relatorio.pdf # [C1] Relatório entregue na C1
+│   └── analise_impacto.md                                          # [MVP C3 - Rota Segura] Análise de Impacto da C3  
+├── etl/                                                            # [Versão C2] Pipeline de Extração, Transformação e Carga (ETL)
+│   ├── carregamento.py                                             # Carga otimizada via COPY para PostgreSQL
+│   ├── extracao_dados.py                                           # Download dos arquivos fonte (SINESP)
+│   ├── orquestrador_etl.py                                         # Orquestrador do pipeline de dados
+│   └── transformacao_dados.py                                      # Tratamento e padronização dos dados brutos
+├── evals/                                                          # [Versão C2] Avaliações do sistema
+│   ├── avaliacao_ia.py                                             # Código com a avaliação manual da resposta da IA
+│   └── resultado_avaliacao.md                                      # Relatório e as limitações identificadas nos testes e avaliação atual
+├── final-project/                                                  # [MVP C3 - Rota Segura] Backend FastAPI + UI estática publicada (ver README.md)
+├── frontend-next/                                                  # [MVP C3 - Rota Segura] Interface em desenvolvimento Next.js (ver README.md)
+├── services/                                                       # [Versão C2] Serviços de integração externa
+│   └── n8n_client.py                                               # Cliente de comunicação Webhook com o fluxo LLM do N8N
+├── tests/                                                          # [Versão C2] Testes do sistema
+│   └── test_n8n_client.py                                          # Código com os testes do sistema para rodar no terminal
+├── views/                                                          # [Versão C2] Módulos das abas de visualização do Streamlit
+│   ├── aba_geral.py                                                # 1. Análises Gerais de Crimes
+│   ├── aba_genero.py                                               # 2. Vítimas por Gênero
+│   ├── aba_armas.py                                                # 3. Armas Apreendidas
+│   ├── aba_agentes.py                                              # 4. Morte de Agentes do Estado
+│   ├── aba_drogas.py                                               # 5. Drogas Apreendidas
+│   └── aba_analise_ia.py                                           # 6. Análise com Inteligência Artificial (LLM)
+├── .env                                                            # Variáveis de ambiente (conexão do banco e URL do N8N)
+├── app.py                                                          # [Versão C2] Aplicação principal e entrada do Streamlit
+├── requirements.txt                                                # [Versão C2] Dependências e bibliotecas Python do projeto
+└── README.md                                                       # Documentação técnica do projeto
 ```
 
 ---

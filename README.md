@@ -32,7 +32,7 @@ Dando continuidade ao escopo e aos indicadores definidos na **C1**, o **Rota Seg
 
 ---
 
-## URL Pública do Deploy (Entrega C3)
+## 🔗 URL Pública do Deploy (Entrega C3)
 
 O deploy do MVP do projeto foi realizando utilizando do Vercel:
 
